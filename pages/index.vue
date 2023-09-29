@@ -16,15 +16,17 @@
 <script>
 export default {
   name: 'IndexPage',
-  data () {
+  data() {
     return {
-      articles: [{
-        title: ' primer post',
-        slug: 'mi-primer-post',
-        date: new Date()
-      }]
+      articles: [
+        {
+          title: ' primer post',
+          slug: 'mi-primer-post',
+          date: new Date(),
+        },
+      ],
     }
-  }
+  },
 }
 </script>
 

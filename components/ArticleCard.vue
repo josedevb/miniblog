@@ -8,7 +8,7 @@
       <small>Fecha de publicacion: {{ date }}</small>
     </div>
     <figure>
-      <img :src="cover" alt="cover">
+      <img :src="cover" alt="cover" />
     </figure>
     <p>{{ description }}</p>
     <div class="actions">
@@ -21,29 +21,29 @@ export default {
   props: {
     slug: {
       type: String,
-      default: ''
+      default: '',
     },
     title: {
       type: String,
-      default: ''
+      default: '',
     },
     author: {
       type: String,
-      default: ''
+      default: '',
     },
     date: {
       type: Date,
-      default: ''
+      default: '',
     },
     cover: {
       type: String,
-      default: ''
+      default: '',
     },
     description: {
       type: String,
-      default: ''
-    }
-  }
+      default: '',
+    },
+  },
 }
 </script>
 
