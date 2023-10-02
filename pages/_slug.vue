@@ -12,6 +12,22 @@
         <figcaption>Portada - {{ post.title }}</figcaption>
       </figure>
       <VueMarkdown class="markdown">{{ post.content }}</VueMarkdown>
+      <div ref="comments" class="comments">
+        <h3 class="title">Comentarios</h3>
+        <p class="total-comments">
+          Hay {{ article['total-comments'] || 0 }} comentarios
+        </p>
+        <div class="comments-list">
+          <CommentItem
+            v-for="comment in comments"
+            :key="comment.id"
+            v-bind="comment"
+          />
+        </div>
+        <div class="add-comment">
+          <InputComment @submit="createComment" />
+        </div>
+      </div>
     </article>
   </div>
 </template>
@@ -24,18 +40,12 @@ export default {
   components: {
     VueMarkdown,
   },
-  data() {
-    return {
-      post: {
-        slug: 'mi-primer-post',
-        title: 'Mi primer post',
-        author: 'Diana Martínez',
-        updated: '8/06/2022',
-        description: 'Lorem ispum dolor sit amet',
-        cover: 'https://via.placeholder.com/1024x420',
-        content: '# Title\n\n## Second title\n\nLorem ipsum dolor sit amet',
-      },
-    }
+  asyncData({ params, $http, isDev }) {
+    const { slug } = params
+    const url = isDev ? 'http://localhost:9999' : 'https://nuxt-miniblog-course.netlify.app'
+    const article = $http.$get(`${url}/.netlify/functions/article?slug=${slug}`)
+
+    return article
   },
   head() {
     return {
@@ -43,6 +53,26 @@ export default {
       meta: [{ name: 'description', content: this.post?.description || '' }],
     }
   },
+  computed: {
+    post() {
+      return {
+        title: this.article?.title,
+        author: this.article['author-name'][0],
+        updated: new Date(this.article?.updated).toLocaleDateString(),
+        description: this.article?.description,
+        cover: this.article?.cover[0].thumbnails.full.url,
+        content: this.article?.content
+      }
+    }
+  },
+  methods: {
+    async createComment(comment) {
+      const url = location.hostname === "localhost" ? 'http://localhost:9999' : 'https://nuxt-miniblog-course.netlify.app'
+      await fetch(`${url}/.netlify/functions/comment?articles=${this.article._id}`, {
+        method: 'post', body: JSON.stringify(comment)
+      })
+    }
+  }
 }
 </script>
 

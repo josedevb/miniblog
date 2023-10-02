@@ -18,15 +18,20 @@ export default {
   name: 'IndexPage',
   data() {
     return {
-      articles: [
-        {
-          title: ' primer post',
-          slug: 'mi-primer-post',
-          date: new Date(),
-        },
-      ],
+      articles: [],
     }
   },
+  async mounted() {
+    const baseUrl = location.hostname === "localhost" ? 'http://localhost:9999' : 'https://nuxt-miniblog-course.netlify.app'
+    const url = `${baseUrl}/.netlify/functions/articles`
+    const { articles } = await this.$http.$get(url)
+    this.articles = articles.map((a) => ({
+      ...a,
+      author: a['author-name'][0],
+      date: new Date(a.updated),
+      cover: a.cover[0]?.thumbnails.large.url
+    }))
+  }
 }
 </script>
 
