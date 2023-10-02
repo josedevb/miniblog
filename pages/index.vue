@@ -16,9 +16,24 @@
 <script>
 export default {
   name: 'IndexPage',
-  data() {
+  async asyncData({ isDev, $http }) {
+    const baseUrl = isDev === "localhost" ? 'http://localhost:9999' : 'https://nuxt-miniblog-course.netlify.app'
+    const url = `${baseUrl}/.netlify/functions/articles`
+    const { articles } = await $http.$get(url)
     return {
-      articles: [],
+      posts: articles
+    }
+  },
+  computed: {
+    articles () {
+      return Array.isArray(this.posts) ? this.posts.map((a) => ({
+        title: a?.title,
+        author: a['author-name'][0],
+        updated: new Date(a?.updated).toLocaleDateString(),
+        description: a?.description,
+        cover: a?.cover[0].thumbnails.full.url,
+        content: a?.content
+      })) : []
     }
   },
   async mounted() {

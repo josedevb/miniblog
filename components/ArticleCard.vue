@@ -32,7 +32,7 @@ export default {
       default: '',
     },
     date: {
-      type: Date,
+      type: String,
       default: '',
     },
     cover: {
