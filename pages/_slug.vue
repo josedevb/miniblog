@@ -67,10 +67,13 @@ export default {
   },
   methods: {
     async createComment(comment) {
+      this.$nuxt.$loading.start();
       const url = location.hostname === "localhost" ? 'http://localhost:9999' : 'https://nuxt-miniblog-course.netlify.app'
-      await fetch(`${url}/.netlify/functions/comment?articles=${this.article._id}`, {
+      await fetch(`${url}/.netlify/functions/comment?article=${this.article._id}`, {
         method: 'post', body: JSON.stringify(comment)
       })
+      this.$nuxt.refresh();
+      this.$nuxt.$loading.finish();
     }
   }
 }
